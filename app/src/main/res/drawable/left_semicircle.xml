@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportHeight="48"
+    android:viewportWidth="48">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M0 0 0 48 48 48 48 0z"
+        android:strokeAlpha="1"/>
+
+    <!--A（圆的x轴半径，y轴半径，x轴旋转角度，0/1-小/大弧度，0/1-逆/顺时针，圆的终点位置x点，圆的终点位置y点）
+    https://blog.csdn.net/qq_35323561/article/details/80018898-->
+
+    <path
+        android:pathData="M48 2 A 22,22 0 1 0 48,46"
+        android:strokeWidth="3.0"
+        android:strokeAlpha="1"
+        android:strokeColor="#ff00ff00" />
+</vector>
