@@ -6,9 +6,13 @@
     android:viewportHeight="22.0">
 
     <path
+        android:fillColor="@android:color/white"
+        android:pathData="M0 0 0 22 22 22 22 0z"
+        android:strokeAlpha="1" />
+    <path
         android:pathData="M22,22
-                       V22,2
-                       c0,-1.1 -0.9,-2 -2,-2
+                       V22,4
+                       c0,-2.2 -1.8,-4 -4,-4
                        H2,0
                        Z
                        "
