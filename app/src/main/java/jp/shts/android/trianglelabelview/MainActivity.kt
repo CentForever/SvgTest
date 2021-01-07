@@ -3,6 +3,7 @@ package jp.shts.android.trianglelabelview
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -24,10 +25,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import jp.shts.android.trianglelabelview.DrawableUtil.OnDrawableListener
+import jp.shts.android.trianglelabelview.reflection.CustomToast
+import jp.shts.android.trianglelabelview.reflection.KotlinAnnotationReflectionExt
 
 
 class MainActivity : AppCompatActivity() {
     private var activity:Activity? =null
+    @SuppressLint("LongLogTag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -39,15 +43,19 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.mTextView).isEnabled = true
             stateMachine.executeTransition(Transition.Canceled)
         },500)*/
-
-
+        findViewById<Button>(R.id.buttonOne).setOnClickListener {
+            CustomToast.showToast(activity, "提示信息", 3000)
+        }
+        findViewById<Button>(R.id.buttonTwo).setOnClickListener {
+            CustomToast.showToast(activity, "仅您邀请的微信好友或群成员可入会，该邀请无法被他人转发", 3000)
+        }
         val msg="仅您邀请的微信好友或群成员可入会，该邀请无法被他人转发 "
         val span3 = SpannableString(msg)
         val image = ImageSpan(this, R.mipmap.icon_info, DynamicDrawableSpan.ALIGN_BOTTOM)
-        span3.setSpan(image, msg.length-1, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span3.setSpan(image, msg.length - 1, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         findViewById<TextView>(R.id.mTextView).text = span3
-        //mode8()
-        mode9()
+        mode8()
+        // mode9()
         //createLink(msg)
         //createLink()
         //setSpanLink("百度手机卫士","https://www.baidu.com",0,2)
@@ -60,9 +68,26 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "right", Toast.LENGTH_SHORT).show()
             }
         })
+        KotlinAnnotationReflectionExt(MainActivity::class.java, TestAnnotation::class.java).findPropertiesWithAnnotationInternal()
+
+        val c: Class<MainActivity> = MainActivity::class.java
+        c.declaredMethods.filter {
+            return@filter it.isAnnotationPresent(TestAnnotation2::class.java)
+        }.forEach {
+            val annotation = it.getAnnotation(TestAnnotation2::class.java) as TestAnnotation2
+            val propertyName = it.name
+            annotation.value.forEach {
+                Log.e("findPropertiesWithAnnotationInternal:", "annotationValue:${it}")
+            }
+        }
+
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        // intent.type = "video/*"
+        startActivityForResult(intent, 11)
     }
 
-    private fun setSpanLink(txt: String, url: String, start: Int, end: Int) {
+    @TestAnnotation()
+    fun setSpanLink(txt: String, url: String, start: Int, end: Int) {
         if (txt.length > end) {
             findViewById<TextView>(R.id.mTextView).text = txt
             val sp = SpannableString(txt)
@@ -94,10 +119,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ResourceAsColor")
-    private fun createLink() {
+    @TestAnnotation2("Hello testMethod 1", "dded")
+    fun createLink() {
         val sp = SpannableString("百度手机卫士")
-        sp.setSpan( ForegroundColorSpan(Color.YELLOW), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sp.setSpan( BackgroundColorSpan(Color.TRANSPARENT), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sp.setSpan(ForegroundColorSpan(Color.YELLOW), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sp.setSpan(BackgroundColorSpan(Color.TRANSPARENT), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sp.setSpan(URLSpan("http://www.baidu.com"), 0, 2,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sp.setSpan(object : ClickableSpan() {
@@ -111,9 +137,9 @@ class MainActivity : AppCompatActivity() {
                 ds.isUnderlineText = false
             }
         }, 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sp.setSpan(BackgroundColorSpan(Color.RED), 0 ,2,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sp.setSpan(ForegroundColorSpan(activity!!.let { ContextCompat.getColor(it,R.color.blue_ribbon_alpha_100) }),0,2, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        findViewById<TextView>(R.id.mTextView).highlightColor = activity?.let { ContextCompat.getColor(it,android.R.color.transparent) }!! //不设置该属性，点击后会有背景色
+        sp.setSpan(BackgroundColorSpan(Color.RED), 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sp.setSpan(ForegroundColorSpan(activity!!.let { ContextCompat.getColor(it, R.color.blue_ribbon_alpha_100) }), 0, 2, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        findViewById<TextView>(R.id.mTextView).highlightColor = activity?.let { ContextCompat.getColor(it, android.R.color.transparent) }!! //不设置该属性，点击后会有背景色
         findViewById<TextView>(R.id.mTextView).text = sp
         findViewById<TextView>(R.id.mTextView).movementMethod = LinkMovementMethod.getInstance()
     }
@@ -134,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         //val imageSpan = ImageSpan(this, R.mipmap.ic_launcher)
         //也可以这样
         //val drawable = resources.getDrawable(R.mipmap.ic_launcher);
-        val drawable = ContextCompat.getDrawable(this,R.mipmap.ic_launcher);
+        val drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
         drawable?.setBounds(0, 0, dp2px(40f), dp2px(40f))
         val imageSpan1 = ImageSpan(drawable);
         //将index为6、7的字符用图片替代
@@ -147,7 +173,10 @@ class MainActivity : AppCompatActivity() {
         }
         spannableString.setSpan(clickableSpan, 6, 7, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         (findViewById<TextView>(R.id.mTextView)).text = spannableString
+        (findViewById<TextView>(R.id.mTextView)).movementMethod = LinkMovementMethod.getInstance()
     }
+
+
 
     private fun mode9() {
         val spannableString = SpannableStringBuilder()
@@ -157,20 +186,20 @@ class MainActivity : AppCompatActivity() {
         val drawable = activity?.let { ContextCompat.getDrawable(it, R.mipmap.icon_info) }
         drawable?.setBounds(0, 0, 80, 80)
         val imageSpan = ImageSpan(drawable!!)
-        spannableString.setSpan(imageSpan, msg.length-1, msg.length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        spannableString.setSpan(imageSpan, msg.length - 1, msg.length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 //showMsg()
                 val completeText =(view as TextView).text as SpannableString
-                Log.v("characters position", ""+ completeText.getSpanStart(this) + " / " + completeText.getSpanEnd(this));
-                initPopWindow(view as TextView,activity,completeText.getSpanEnd(this))
-                getTextViewSelectionBottomY(view as TextView,completeText.getSpanStart(this))
+                Log.v("characters position", "" + completeText.getSpanStart(this) + " / " + completeText.getSpanEnd(this));
+                initPopWindow(view as TextView, activity, completeText.getSpanEnd(this))
+                getTextViewSelectionBottomY(view as TextView, completeText.getSpanStart(this))
             }
         }
-        spannableString.setSpan(clickableSpan, msg.length-1, msg.length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        spannableString.setSpan(clickableSpan, msg.length - 1, msg.length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         //文字颜色
         val colorSpan =  ForegroundColorSpan(Color.parseColor("#FFFFFF"));
-        spannableString.setSpan(colorSpan,5, 8, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        spannableString.setSpan(colorSpan, 5, 8, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         //文字背景颜色
         val bgColorSpan = BackgroundColorSpan(Color.parseColor("#009ad6"));
         spannableString.setSpan(bgColorSpan, 5, 8, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -179,7 +208,7 @@ class MainActivity : AppCompatActivity() {
         textView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    fun initPopWindow(v: TextView, mContext: Context?,index: Int) {
+    fun initPopWindow(v: TextView, mContext: Context?, index: Int) {
         val view = LayoutInflater.from(mContext).inflate(R.layout.item_popip, null, false)
         val btn_xixi = view.findViewById<View>(R.id.btn_xixi) as Button
         val btn_hehe = view.findViewById<View>(R.id.btn_hehe) as Button
@@ -220,7 +249,7 @@ class MainActivity : AppCompatActivity() {
 
 
         //设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量
-        popWindow.showAsDropDown(v, xAxisLeft.toInt()-view.measuredWidth/2 - 40, yAxisTop-50)
+        popWindow.showAsDropDown(v, xAxisLeft.toInt() - view.measuredWidth / 2 - 40, yAxisTop - 50)
 
         //设置popupWindow里的按钮的事件
         btn_xixi.setOnClickListener { Toast.makeText(mContext, "你点击了嘻嘻~", Toast.LENGTH_SHORT).show() }
@@ -249,7 +278,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showMsg(){
-        Toast.makeText(this,"menggang",Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "menggang", Toast.LENGTH_LONG).show()
     }
 
     fun dp2px(dpValue: Float): Int {

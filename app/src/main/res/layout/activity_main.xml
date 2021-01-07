@@ -25,6 +25,8 @@
         android:orientation="vertical"
         tools:context="jp.shts.android.trianglelabelview.MainActivity">
 
+
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,6 +99,17 @@
                 android:gravity="center" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/buttonOne"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"/>
+
+        <Button
+            android:id="@+id/buttonTwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"/>
         <include
             layout="@layout/line_view"
             android:visibility="visible" />
