@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun mode9() {
         val spannableString = SpannableStringBuilder()
-        val msg= "仅您邀请的微信好友或群成员可入会，该邀请无法被他人转发  "
+        val msg= "设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量  "
         spannableString.append(msg)
         //val imageSpan = ImageSpan(this, R.mipmap.ic_launcher);
         val drawable = activity?.let { ContextCompat.getDrawable(it, R.mipmap.icon_info) }
