@@ -39,16 +39,6 @@ class MainActivity : AppCompatActivity() {
         toolbar.setTitle(R.string.app_name)
         stateMachine.initialState(State.None)
         activity = this
-       /* findViewById<TextView>(R.id.mTextView).postDelayed({
-            findViewById<TextView>(R.id.mTextView).isEnabled = true
-            stateMachine.executeTransition(Transition.Canceled)
-        },500)*/
-        findViewById<Button>(R.id.buttonOne).setOnClickListener {
-            CustomToast.showToast(activity, "提示信息", 3000)
-        }
-        findViewById<Button>(R.id.buttonTwo).setOnClickListener {
-            CustomToast.showToast(activity, "从前面的app导出dex，我们已得到：（一个或）多个dex文件，而这么多dex，其中只有一个是真正包含了安卓app的业务逻辑的dex文件。", 3000)
-        }
         val msg="从前面的app导出dex，我们已得到：（一个或）多个dex文件，而这么多dex，其中只有一个是真正包含了安卓app的业务逻辑的dex文件。"
         val span3 = SpannableString(msg)
         val image = ImageSpan(this, R.mipmap.icon_info, DynamicDrawableSpan.ALIGN_BOTTOM)
@@ -162,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         //val drawable = resources.getDrawable(R.mipmap.ic_launcher);
         val drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
         drawable?.setBounds(0, 0, dp2px(40f), dp2px(40f))
-        val imageSpan1 = ImageSpan(drawable);
+        val imageSpan1 = drawable?.let { ImageSpan(it) };
         //将index为6、7的字符用图片替代
         spannableString.setSpan(imageSpan1, 6, 7, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
 
