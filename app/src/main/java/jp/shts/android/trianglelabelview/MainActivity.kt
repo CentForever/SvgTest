@@ -47,9 +47,9 @@ class MainActivity : AppCompatActivity() {
             CustomToast.showToast(activity, "提示信息", 3000)
         }
         findViewById<Button>(R.id.buttonTwo).setOnClickListener {
-            CustomToast.showToast(activity, "仅您邀请的微信好友或群成员可入会，该邀请无法被他人转发", 3000)
+            CustomToast.showToast(activity, "从前面的app导出dex，我们已得到：（一个或）多个dex文件，而这么多dex，其中只有一个是真正包含了安卓app的业务逻辑的dex文件。", 3000)
         }
-        val msg="仅您邀请的微信好友或群成员可入会，该邀请无法被他人转发 "
+        val msg="从前面的app导出dex，我们已得到：（一个或）多个dex文件，而这么多dex，其中只有一个是真正包含了安卓app的业务逻辑的dex文件。"
         val span3 = SpannableString(msg)
         val image = ImageSpan(this, R.mipmap.icon_info, DynamicDrawableSpan.ALIGN_BOTTOM)
         span3.setSpan(image, msg.length - 1, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
